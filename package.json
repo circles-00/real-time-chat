@@ -19,13 +19,7 @@
     "node": ">=18.12.1"
   },
   "devDependencies": {
-    "husky": "4.3.8",
     "lint-staged": "13.1.2",
     "turbo": "1.8.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged --config lint-staged.config.js"
-    }
   }
 }
