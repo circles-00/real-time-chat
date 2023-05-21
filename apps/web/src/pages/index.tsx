@@ -1,5 +1,19 @@
+import { GithubLoginButton } from '@components'
+import { signIn } from 'next-auth/react'
+import { HideUnAuthContent } from '@components/Auth/HideUnAuthContent'
+
 const Home = () => {
-  return <h1 className="font-bold">Home</h1>
+  const handleOnGithubSignIn = async () => {
+    await signIn('github')
+  }
+
+  return (
+    <div className="flex justify-center items-center h-screen w-screen">
+      <HideUnAuthContent>
+        <GithubLoginButton onClick={handleOnGithubSignIn} />
+      </HideUnAuthContent>
+    </div>
+  )
 }
 
 export default Home

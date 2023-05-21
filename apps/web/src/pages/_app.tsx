@@ -4,7 +4,7 @@ import { RootProvider } from '@providers'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <RootProvider>
+    <RootProvider session={pageProps.session}>
       <Component {...pageProps} />
     </RootProvider>
   )

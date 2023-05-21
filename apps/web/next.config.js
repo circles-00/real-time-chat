@@ -11,7 +11,7 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: `${'/api'}/:ctrl*`,
+        source: `${'/server'}/:ctrl*`,
         destination: `${process.env.BACKEND_URL}/:ctrl*`,
       },
     ]

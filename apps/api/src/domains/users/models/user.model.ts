@@ -15,6 +15,24 @@ export class User extends Entity {
   })
   name: string
 
+  @property({
+    type: 'string',
+    required: true,
+  })
+  email: string
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  github_id: string
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  avatar: string
+
   constructor(data?: Partial<User>) {
     super(data)
   }
