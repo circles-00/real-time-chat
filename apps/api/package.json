@@ -1,5 +1,5 @@
 {
-  "name": "@stolaar/api",
+  "name": "@github-chat/api",
   "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,7 +26,7 @@
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "rebuild": "yarn run clean && yarn run build"
   },
-  "author": "Aleksandar Stolikj <stolaaar@gmail.com>",
+  "author": "Nikola Krezeski <nkrezeski1@gmail.com>",
   "license": "MIT",
   "files": [
     "README.md",
