@@ -9,7 +9,6 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log(user)
       if (!user) return false
       try {
         await axios.post(`${process.env.BACKEND_URL}/users`, {
