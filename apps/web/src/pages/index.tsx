@@ -1,6 +1,7 @@
 import { GithubLoginButton } from '@components'
 import { signIn } from 'next-auth/react'
 import { HideUnAuthContent } from '@components/Auth/HideUnAuthContent'
+import { UsersList } from '@domain/users'
 
 const Home = () => {
   const handleOnGithubSignIn = async () => {
@@ -12,6 +13,7 @@ const Home = () => {
       <HideUnAuthContent>
         <GithubLoginButton onClick={handleOnGithubSignIn} />
       </HideUnAuthContent>
+      <UsersList />
     </div>
   )
 }

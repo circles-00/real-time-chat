@@ -8,6 +8,14 @@ const nextConfig = {
     externalDir: true,
     runtime: 'nodejs',
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+  },
   async rewrites() {
     return [
       {
