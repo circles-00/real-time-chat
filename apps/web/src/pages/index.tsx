@@ -1,5 +1,5 @@
-import { UsersManager } from '@domain/users/containers'
-
-export default function Home() {
-  return <UsersManager />
+const Home = () => {
+  return <h1>Home</h1>
 }
+
+export default Home

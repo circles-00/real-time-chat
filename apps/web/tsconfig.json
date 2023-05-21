@@ -1,19 +1,10 @@
 {
   "extends": "@stolaar/tsconfig/base.json",
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "ignoreDeprecations": "5.0",
     "allowJs": true,
     "noEmit": true,
     "incremental": true,
@@ -31,7 +22,7 @@
       "@styles/*": ["src/styles/*"],
       "@domain/*": ["src/domains/*"],
       "@components/*": ["src/components/*"],
-      "@components": ["src/components/index"],
+      "@components": ["src/components/index"]
     }
   }
 }
