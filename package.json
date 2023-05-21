@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "turbo dev",
     "eslint": "turbo eslint",
+    "build": "turbo build",
     "lb4": "lb4"
   },
   "engines": {

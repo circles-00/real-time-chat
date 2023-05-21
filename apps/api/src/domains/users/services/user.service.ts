@@ -14,4 +14,19 @@ export class UserService {
   async getUsers() {
     return this.userRepository.find()
   }
+
+  async getUserByEmail(email: string) {
+    return this.userRepository.findOne({
+      where: {
+        email,
+      },
+    })
+  }
+
+  async updateUserStatus(email: string, status: string) {
+    const userFromDb = await this.getUserByEmail(email)
+    if (!userFromDb) return
+
+    return this.userRepository.save({ ...userFromDb, status } as User)
+  }
 }

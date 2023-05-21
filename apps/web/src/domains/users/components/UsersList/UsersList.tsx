@@ -20,7 +20,7 @@ export const UsersList: FC<IUsersListProps> = () => {
               key={user?.id}
               name={user?.name}
               avatar={user?.avatar}
-              status={user?.status ?? 'online'}
+              status={user?.status ?? 'offline'}
             />
           ))}
       </div>

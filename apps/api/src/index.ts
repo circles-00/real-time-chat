@@ -1,4 +1,5 @@
 import { ApplicationConfig, ApiApplication } from './application'
+import { SocketIoExampleApplication } from './loopback-websocket-server'
 
 export * from './application'
 
@@ -6,6 +7,18 @@ export async function main(options: ApplicationConfig = {}) {
   const app = new ApiApplication(options)
   await app.boot()
   await app.start()
+
+  const wsApp = new SocketIoExampleApplication({
+    httpServerOptions: {
+      host: '127.0.0.1',
+      port: 3300,
+    },
+  })
+  await wsApp.boot()
+  await wsApp.start()
+
+  const wsUrl = wsApp.socketServer.url
+  console.log(`Server is running at ${wsUrl}`)
 
   await app.migrateSchema()
 

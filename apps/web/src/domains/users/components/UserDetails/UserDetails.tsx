@@ -10,7 +10,9 @@ export const UserDetails: FC<IUserDetailsProps> = ({
 }) => {
   return (
     <div className="bg-white justify-between w-96 flex items-center border-2 p-4 rounded-md border-slate-500">
-      <p className="text-green-500">{status}</p>
+      <p className={status === 'online' ? 'text-green-500' : 'text-red-500'}>
+        {status}
+      </p>
       <p>{name}</p>
       <Image width={50} height={50} src={avatar} alt={'avatar'} />
       <button className="font-bold">

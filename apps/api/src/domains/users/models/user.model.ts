@@ -33,6 +33,13 @@ export class User extends Entity {
   })
   avatar: string
 
+  @property({
+    type: 'string',
+    required: false,
+    default: 'offline',
+  })
+  status: string
+
   constructor(data?: Partial<User>) {
     super(data)
   }
