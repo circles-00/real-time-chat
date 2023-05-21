@@ -8,7 +8,7 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn({ user }) {
       if (!user) return false
       try {
         await axios.post(`${process.env.BACKEND_URL}/users`, {
