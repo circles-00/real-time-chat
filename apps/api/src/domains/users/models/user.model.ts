@@ -40,6 +40,11 @@ export class User extends Entity {
   })
   status: string
 
+  @property({
+    type: 'string',
+  })
+  socketId: string
+
   constructor(data?: Partial<User>) {
     super(data)
   }

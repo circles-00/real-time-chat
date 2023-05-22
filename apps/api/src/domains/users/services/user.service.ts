@@ -8,6 +8,12 @@ export class UserService {
     private userRepository: UserRepository,
   ) {}
   async createUser(user: DataObject<User>) {
+    const userFromDb = await this.getUserByEmail(user.email as string)
+
+    if (userFromDb) {
+      return userFromDb
+    }
+
     return this.userRepository.create(user)
   }
 
@@ -23,10 +29,25 @@ export class UserService {
     })
   }
 
-  async updateUserStatus(email: string, status: string) {
-    const userFromDb = await this.getUserByEmail(email)
+  async updateUserStatus(email: string, status: string, socketId: string) {
+    let userFromDb = await this.getUserByEmail(email)
+
+    if (!userFromDb) {
+      userFromDb = await this.userRepository.findOne({
+        where: {
+          socketId,
+        },
+      })
+    }
+
+    // ^ Doing this, because or filter magically doesn't work, cmon loopback :(
+
+    // TODO: Introduce constructors for models, or find another better way to do this
     if (!userFromDb) return
 
-    return this.userRepository.save({ ...userFromDb, status } as User)
+    userFromDb.status = status
+    userFromDb.socketId = socketId
+
+    return this.userRepository.save(userFromDb)
   }
 }

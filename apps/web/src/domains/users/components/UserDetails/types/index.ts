@@ -1,7 +1,5 @@
-export type UserStatus = 'online' | 'offline'
+import { TUser } from '@domain/users'
 
-export interface IUserDetailsProps {
-  name: string
-  avatar: string
-  status: UserStatus
+export interface IUserDetailsProps extends TUser {
+  isMyself: boolean
 }

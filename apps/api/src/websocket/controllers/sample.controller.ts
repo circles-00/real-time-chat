@@ -5,12 +5,14 @@
 
 import { Socket, socketio } from '@loopback/socketio'
 import debugFactory from 'debug'
-import { inject } from '@loopback/core'
-import { USERS_SERVICE } from '../../domains/users/keys'
 import { UserService } from '../../domains/users/services/user.service'
-import { User } from '../../domains/users/models'
 import { UserRepository } from '../../domains/users/repositories/user.repository'
 import { DbDataSource } from '../../datasources'
+import { ChatService } from '../../domains/chat/services/chat.service'
+import { ChatRepository } from '../../domains/chat/repositories/chat.repository'
+import { Getter } from '@loopback/core'
+import { MessageRepository } from '../../domains/chat/repositories/message.repository'
+import { UserChatRepository } from '../../domains/chat/repositories/user-chat.repository'
 
 const debug = debugFactory('loopback:socketio:controller')
 
@@ -26,11 +28,32 @@ const debug = debugFactory('loopback:socketio:controller')
 @socketio('/')
 export class SocketIoController {
   userService: UserService
+  chatService: ChatService
+  messageRepository: MessageRepository
+  userRepository: UserRepository
+  userChatRepository: UserChatRepository
+
+  private readonly publicRoom = 'publicRoom'
   constructor(
     @socketio.socket() // Equivalent to `@inject('ws.socket')`
     private socket: Socket,
   ) {
-    this.userService = new UserService(new UserRepository(new DbDataSource()))
+    // TODO: Find a way to inject services into the WebSocket Server, for now enjoy this hack :)
+    this.userRepository = new UserRepository(new DbDataSource())
+    this.userService = new UserService(this.userRepository)
+    this.messageRepository = new MessageRepository(new DbDataSource())
+    this.userChatRepository = new UserChatRepository(new DbDataSource())
+    this.chatService = new ChatService(
+      new ChatRepository(
+        new DbDataSource(),
+        Getter.fromValue(new MessageRepository(new DbDataSource())),
+        Getter.fromValue(this.userRepository),
+        Getter.fromValue(this.userChatRepository),
+      ),
+      this.messageRepository,
+      this.userChatRepository,
+      this.userRepository,
+    )
   }
 
   /**
@@ -41,11 +64,24 @@ export class SocketIoController {
   @socketio.connect()
   async connect(socket: Socket) {
     console.log('Client connected: %s', this.socket.id)
+    return socket.join(this.publicRoom)
   }
 
   @socketio.subscribe('updateStatus')
   async updateStatus(data: any) {
-    await this.userService.updateUserStatus(data.email, data.status)
+    try {
+      await this.userService.updateUserStatus(
+        data.email,
+        data.status,
+        this.socket.id,
+      )
+    } catch (error) {
+      console.error(error)
+    }
+
+    this.socket.nsp
+      .to(this.publicRoom)
+      .emit('updateStatus', `update:${this.socket.id}`)
   }
 
   /**
@@ -126,7 +162,9 @@ export class SocketIoController {
    * @param socket
    */
   @socketio.disconnect()
-  disconnect() {
-    debug('Client disconnected: %s', this.socket.id)
+  async disconnect() {
+    console.log('Client disconnected: %s', this.socket.id)
+    await this.userService.updateUserStatus('', 'offline', this.socket.id)
+    this.socket.nsp.to(this.publicRoom).emit('updateStatus', this.socket.id)
   }
 }

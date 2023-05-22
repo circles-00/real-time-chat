@@ -9,8 +9,9 @@ import { RestApplication } from '@loopback/rest'
 import { ServiceMixin } from '@loopback/service-proxy'
 import path from 'path'
 import { MySequence } from './sequence'
-import { USERS_SERVICE } from './domains/users/keys'
+import { CHAT_SERVICE, USERS_SERVICE } from './domains/users/keys'
 import { UserService } from './domains/users/services/user.service'
+import { ChatService } from './domains/chat/services/chat.service'
 
 export { ApplicationConfig }
 
@@ -50,5 +51,6 @@ export class ApiApplication extends BootMixin(
 
   setupBindings(): void {
     this.bind(USERS_SERVICE).toClass(UserService)
+    this.bind(CHAT_SERVICE).toClass(ChatService)
   }
 }
