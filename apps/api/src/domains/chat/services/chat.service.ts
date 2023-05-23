@@ -34,19 +34,31 @@ export class ChatService {
 
     const chat = await this.chatRepository.save(new Chat())
 
-    for (const participant of chat?.participants ?? []) {
+    // TODO: Refactor all models, this is bad
+    for (const participant of participants ?? []) {
       const userChat = new UserChat()
+      const participantFromDb = await this.userRepository.findOne({
+        where: { email: participant },
+      })
+
       userChat.chatId = chat.id
-      userChat.userId = participant.id
+      userChat.userId = participantFromDb?.id
       await this.userChatRepository.save(userChat)
     }
+
+    return chat
   }
 
-  async saveMessage(chatId: number, sentBy: number, message: string) {
+  async saveMessage(chatId: number, sentBy: string, message: string) {
     const messageRow = new Message()
+    const senderFromDb = await this.userRepository.findOne({
+      where: {
+        email: sentBy,
+      },
+    })
 
     messageRow.chatId = chatId
-    messageRow.userId = sentBy
+    messageRow.userId = senderFromDb?.id as number
     messageRow.message = message
     messageRow.timestamp = new Date()
 

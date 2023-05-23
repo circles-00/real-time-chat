@@ -16,6 +16,22 @@ export const useWebSocket = () => {
     WebSocketService.getInstance().on('updateStatus', callback)
   }
 
+  const joinChat = (chatId: number) => {
+    WebSocketService.getInstance().emit('joinChat', { chatId })
+  }
+
+  const sendMessage = (chatId: number, sender: string, message: string) => {
+    WebSocketService.getInstance().emit('sendMessage', {
+      chatId,
+      sender,
+      message,
+    })
+  }
+
+  const listenForMessages = (callback: () => void) => {
+    WebSocketService.getInstance().on('newMessage', callback)
+  }
+
   useUpdate(() => {
     if (!user) return
 
@@ -28,5 +44,11 @@ export const useWebSocket = () => {
     }
   }, [user])
 
-  return { updateStatus, onUpdateStatus }
+  return {
+    updateStatus,
+    onUpdateStatus,
+    joinChat,
+    sendMessage,
+    listenOnPrivateRoom: listenForMessages,
+  }
 }

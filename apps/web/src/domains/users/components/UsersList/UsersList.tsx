@@ -1,13 +1,16 @@
-import { FC, useMemo } from 'react'
-import { UserDetails } from '@domain/users'
+import { FC, useMemo, useState } from 'react'
+import { TUser, UserDetails } from '@domain/users'
 import { useQuery } from '@tanstack/react-query'
 import { DataService } from '@services'
 import { IUsersListProps } from './types'
 import { useUser } from '@hooks'
 import { useEffectOnce } from '@rounik/react-custom-hooks'
-import { useWebSocketContext } from '../../../../providers/WebSocketProvider/WebSocketProvider'
+import { useWebSocketContext } from '@providers'
+import { ChatDialog } from '@domain/chat'
 
 export const UsersList: FC<IUsersListProps> = () => {
+  const [userToChat, setUserToChat] = useState<TUser | null>(null)
+
   const { data: users, refetch } = useQuery(
     DataService.getUsers.queryKey,
     DataService.getUsers,
@@ -34,8 +37,21 @@ export const UsersList: FC<IUsersListProps> = () => {
     [users],
   )
 
+  const onHandleOpenChatDialog = (userToChat: TUser) => {
+    setUserToChat(userToChat)
+  }
+
+  const onHandleDialogClose = () => {
+    setUserToChat(null)
+  }
+
   return (
     <div>
+      <ChatDialog
+        open={!!userToChat}
+        onClose={onHandleDialogClose}
+        {...(userToChat as TUser)}
+      />
       <h1 className="text-xl font-bold">Users list:</h1>
       <div className="flex flex-col gap-2">
         {!!sortedUsers &&
@@ -44,6 +60,7 @@ export const UsersList: FC<IUsersListProps> = () => {
               key={user?.id}
               {...user}
               isMyself={isMyself(user.email)}
+              onHandleOpenChatDialog={onHandleOpenChatDialog}
             />
           ))}
       </div>

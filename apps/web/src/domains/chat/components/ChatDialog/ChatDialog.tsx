@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { TUser } from '@domain/users'
@@ -7,6 +7,8 @@ import { PaperAirplaneIcon } from '@heroicons/react/20/solid'
 import { useQuery } from '@tanstack/react-query'
 import { getChat } from '../../../../services/data-service/chat'
 import { useUser } from '@hooks'
+import { useUpdate } from '@rounik/react-custom-hooks'
+import { useWebSocketContext } from '@providers'
 
 interface IChatDialogProps extends TUser {
   open: boolean
@@ -21,14 +23,34 @@ export const ChatDialog: FC<IChatDialogProps> = ({
   avatar,
   email,
 }) => {
-  const { user } = useUser()
+  // TODO: Use RHF for handling form state
+  const [message, setMessage] = useState('')
 
-  const { data: chat } = useQuery([getChat.queryKey, email], () =>
-    getChat([user?.user?.email as string, email]),
+  const { user } = useUser()
+  const { joinChat, sendMessage, listenOnPrivateRoom } = useWebSocketContext()
+  const { data: chat, refetch } = useQuery(
+    [getChat.queryKey, email],
+    () => getChat([user?.user?.email as string, email]),
+    { enabled: !!user?.user?.email && !!email },
   )
+
+  useUpdate(() => {
+    if (chat) {
+      joinChat(chat?.id)
+      listenOnPrivateRoom(refetch)
+    }
+  }, [chat])
 
   const isMyMessage = (email: string) => user?.user?.email === email
 
+  const onHandleSendMessage = () => {
+    if (!message) return
+
+    sendMessage(chat?.id as number, user?.user?.email as string, message)
+    setMessage('')
+  }
+
+  // TODO: Split into more components
   return (
     <>
       <Transition appear show={open} as={Fragment}>
@@ -106,13 +128,15 @@ export const ChatDialog: FC<IChatDialogProps> = ({
 
                   <div className="mt-4 flex">
                     <input
+                      onChange={(event) => setMessage(event.target.value)}
+                      value={message}
                       placeholder="Write a message..."
                       className="border-2 rounded-md px-2 w-full mr-4 border-slate-700"
                     />
                     <button
                       type="button"
                       className="inline-flex items-center gap-1 ml-auto justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={onClose}
+                      onClick={onHandleSendMessage}
                     >
                       Send
                       <PaperAirplaneIcon className="w-6 h-6" />

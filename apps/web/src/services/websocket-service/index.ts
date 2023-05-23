@@ -1,6 +1,5 @@
 import { Socket } from 'socket.io-client'
 import { createSocket } from '../../utils'
-import { TUser } from '@domain/users'
 
 export class WebSocketService {
   static instance: WebSocketService
