@@ -1,14 +1,17 @@
-import { FC, useState } from 'react'
+import { type FC, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { TUser } from '@domain/users'
-import Image from 'next/image'
-import { PaperAirplaneIcon } from '@heroicons/react/20/solid'
 import { useQuery } from '@tanstack/react-query'
 import { DataService } from '@services'
 import { useUser } from '@hooks'
 import { useUpdate } from '@rounik/react-custom-hooks'
 import { useWebSocketContext } from '@providers'
+import {
+  MessagesContainer,
+  ChatDiallogHeader,
+  ChatDialogFooter,
+} from './components'
 
 interface IChatDialogProps extends TUser {
   open: boolean
@@ -50,7 +53,6 @@ export const ChatDialog: FC<IChatDialogProps> = ({
     setMessage('')
   }
 
-  // TODO: Split into more components
   return (
     <>
       <Transition appear show={open} as={Fragment}>
@@ -79,69 +81,18 @@ export const ChatDialog: FC<IChatDialogProps> = ({
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <div className="flex items-center gap-4">
-                    <Image
-                      src={avatar}
-                      alt={'User Avatar'}
-                      width={50}
-                      height={50}
-                    />
-
-                    <div>
-                      <Dialog.Title
-                        as="h3"
-                        className="text-lg font-medium leading-6 text-gray-900"
-                      >
-                        {name}{' '}
-                        <span
-                          className={
-                            status === 'online'
-                              ? 'text-green-500'
-                              : 'text-red-500'
-                          }
-                        >
-                          ({status})
-                        </span>
-                      </Dialog.Title>
-                      <p className="text-gray-400">{email}</p>
-                    </div>
-                  </div>
-                  <div className="mt-5 w-full h-96 overflow-y-scroll flex flex-col gap-5 border-2 rounded-md border-slate-700 p-7">
-                    {chat?.messages?.map((message, idx) =>
-                      isMyMessage(message?.sentBy?.email) ? (
-                        <div
-                          key={idx}
-                          className="text-white bg-slate-400 w-7/12 rounded-lg py-2 px-4"
-                        >
-                          {message?.message}
-                        </div>
-                      ) : (
-                        <div
-                          key={idx}
-                          className="text-white ml-auto bg-indigo-600 w-7/12 rounded-lg py-2 px-4"
-                        >
-                          {message?.message}
-                        </div>
-                      ),
-                    )}
-                  </div>
-
-                  <div className="mt-4 flex">
-                    <input
-                      onChange={(event) => setMessage(event.target.value)}
-                      value={message}
-                      placeholder="Write a message..."
-                      className="border-2 rounded-md px-2 w-full mr-4 border-slate-700"
-                    />
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1 ml-auto justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={onHandleSendMessage}
-                    >
-                      Send
-                      <PaperAirplaneIcon className="w-6 h-6" />
-                    </button>
-                  </div>
+                  <ChatDiallogHeader
+                    name={name}
+                    status={status}
+                    avatar={avatar}
+                    email={email}
+                  />
+                  <MessagesContainer chat={chat} isMyMessage={isMyMessage} />
+                  <ChatDialogFooter
+                    message={message}
+                    onHandleSendMessage={onHandleSendMessage}
+                    setMessage={setMessage}
+                  />
                 </Dialog.Panel>
               </Transition.Child>
             </div>

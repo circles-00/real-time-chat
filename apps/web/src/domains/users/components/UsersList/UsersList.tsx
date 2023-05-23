@@ -1,8 +1,8 @@
-import { FC, useMemo, useState } from 'react'
-import { TUser, UserDetails } from '@domain/users'
+import { type FC, useMemo, useState } from 'react'
+import { type TUser, UserDetails } from '@domain/users'
 import { useQuery } from '@tanstack/react-query'
 import { DataService } from '@services'
-import { IUsersListProps } from './types'
+import { type IUsersListProps } from './types'
 import { useUser } from '@hooks'
 import { useEffectOnce } from '@rounik/react-custom-hooks'
 import { useWebSocketContext } from '@providers'
@@ -26,6 +26,7 @@ export const UsersList: FC<IUsersListProps> = () => {
   const { user } = useUser()
   const isMyself = (email: string) => user?.user?.email === email
 
+  // This should probably be done by backend, but for now it's OK
   const sortedUsers = useMemo(
     () =>
       users?.sort((a, b) => {
