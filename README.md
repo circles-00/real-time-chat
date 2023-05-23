@@ -1,3 +1,15 @@
+# What is it?
+- It's a simple real-time chat
+- Requires Github account for login
+- It works with websockets
+
+### Preview:
+
+https://github.com/circles-00/real-time-chat/assets/42126548/fda8e547-5cff-419b-9fc3-01e7a8358e39
+
+### TODO:
+- Needs more work, it's far from production-ready, this is just a simple app to demonstrate basic fullstack principles, obviously some of the code needs refactoring & restructuring
+
 ### ⚠️ Before Starting
 
 Requirements
