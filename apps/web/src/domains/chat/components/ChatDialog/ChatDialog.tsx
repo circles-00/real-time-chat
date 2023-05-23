@@ -5,7 +5,7 @@ import { TUser } from '@domain/users'
 import Image from 'next/image'
 import { PaperAirplaneIcon } from '@heroicons/react/20/solid'
 import { useQuery } from '@tanstack/react-query'
-import { getChat } from '../../../../services/data-service/chat'
+import { DataService } from '@services'
 import { useUser } from '@hooks'
 import { useUpdate } from '@rounik/react-custom-hooks'
 import { useWebSocketContext } from '@providers'
@@ -29,8 +29,8 @@ export const ChatDialog: FC<IChatDialogProps> = ({
   const { user } = useUser()
   const { joinChat, sendMessage, listenOnPrivateRoom } = useWebSocketContext()
   const { data: chat, refetch } = useQuery(
-    [getChat.queryKey, email],
-    () => getChat([user?.user?.email as string, email]),
+    [DataService.getChat.queryKey, email],
+    () => DataService.getChat([user?.user?.email as string, email]),
     { enabled: !!user?.user?.email && !!email },
   )
 
