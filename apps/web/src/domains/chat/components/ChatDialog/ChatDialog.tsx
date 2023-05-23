@@ -30,7 +30,7 @@ export const ChatDialog: FC<IChatDialogProps> = ({
   const [message, setMessage] = useState('')
 
   const { user } = useUser()
-  const { joinChat, sendMessage, listenOnPrivateRoom } = useWebSocketContext()
+  const { joinChat, sendMessage, listenForMessages } = useWebSocketContext()
   const { data: chat, refetch } = useQuery(
     [DataService.getChat.queryKey, email],
     () => DataService.getChat([user?.user?.email as string, email]),
@@ -40,7 +40,7 @@ export const ChatDialog: FC<IChatDialogProps> = ({
   useUpdate(() => {
     if (chat) {
       joinChat(chat?.id)
-      listenOnPrivateRoom(refetch)
+      listenForMessages(refetch)
     }
   }, [chat])
 

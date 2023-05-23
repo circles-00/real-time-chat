@@ -49,6 +49,6 @@ export const useWebSocket = () => {
     onUpdateStatus,
     joinChat,
     sendMessage,
-    listenOnPrivateRoom: listenForMessages,
+    listenForMessages,
   }
 }
